@@ -8,63 +8,52 @@
 		<div class="center"></div>
 		<table cellspacing="10">
 			<?php
-			$url = "https://icer.ink/media1.clubpenguin.com/play/en/web_service/game_configs/paper_items.json";
-			$jsonItems = file_get_contents($url); // Updated, just like SWF
-			if( $url == "https://icer.ink/media1.clubpenguin.com/play/en/web_service/game_configs/paper_items.json"){
-				// Do something
-			} else {
-				die();
-			}
-			$objDecode = json_decode($jsonItems, true);
+			require_once( "Database.php" );
 			$objPage = isset($_GET['p']) ? intval($_GET['p']) : 0;
 			$itemsPerPage = 10;
+			$tpapers = getData("SELECT * FROM paper WHERE table_id > " . (($objPage * $itemsPerPage) -1 ) . " LIMIT 10");
 			if( $itemsPerPage > 10){ // Added
 				die();
 			}
-			$elements = array_slice($objDecode, $objPage * $itemsPerPage, $itemsPerPage);
-			$totalPages = intval(count($objDecode)/$itemsPerPage);
+			$elements = $tpapers;
 			if(!isset($_GET['p']) || empty($_GET['p'])){
 				$_GET['p'] = '0';
 			}
 			$currentPage = $_GET['p'];
-			if($currentPage > $totalPages){
-				$kekxd = '0'; // Added
-				echo("<tr><td>Sorry this page does not exist. Please return to <a href='?p=$kekxd'>page 1</a>.</td></tr>"); // Modified
-				if( $kekxd !== '0'){ // Added
-					die();
-				}
-				exit;
-			}
 			if(ctype_digit($currentPage)){ // Added
 				echo "<center><h1>Club Penguin Item Database</h1></center>";
-			} else {
+			} else {				
+				echo "<center><h1>don't do that kthx</h1></center>"; // If user uses some gay HTTP editor
 				die();
-				echo "<center><h1>MISS ME WITH THAT GAY SHIT NIGGA!</h1></center>"; // If user uses some gay HTTP editor
 			}
 			$objLink1 = $currentPage - 1;
 			$objLink2 = $currentPage + 1;
-			if($_GET['p'] == 0){
-				$objBackButton = "";
-			} else {
-				$objBackButton = "<a href=?p=" . htmlentities($objLink1) . ">Previous Page</a>"; // Modified
+			$objMiddle = "";
+
+			if (count($elements) < 2) {
+				echo("<tr><td>Sorry this page does not exist. Please return to <a href='?p=0'>page 1</a>.</td></tr>"); // Modified
+				exit;
 			}
-			if($_GET['p'] == $totalPages){
-				$objNextButton = "";
-			} else {
+			
+			if (count($elements) > 9) {
+				$objMiddle = " | ";
 				$objNextButton = "<a href=?p=" . htmlentities($objLink2) . ">Next Page</a>"; // Modified
+			} else {
+				$objNextButton = "";
 			}
-			if($_GET['p'] == $totalPages or $_GET['p'] == 0){
+			if($_GET['p'] < 1){
+				$objBackButton = "";
 				$objMiddle = "";
 			} else {
-				$objMiddle = " | ";
+				$objBackButton = "<a href=?p=" . htmlentities($objLink1) . ">Previous Page</a>"; // Modified
 			}
 			$objPageNav = $objBackButton . $objMiddle . $objNextButton;
 			echo('<tr><td colspan="7" align="center">' . $objPageNav . '</td></tr>');
 			foreach($elements as $item) {
 				$label = $item["label"];
 				$cost = $item['cost'];
-				$id = $item['paper_item_id'];
-				$member = $item['is_member'];
+				$id = $item['id'];
+				$member = $item['members'] == 1 ? true : false;
 				$type = $item['type'];
 				$member = $member ? 'True' : 'False';
 				if( $member !== 'True' && $member !== 'False' ) { // Added
