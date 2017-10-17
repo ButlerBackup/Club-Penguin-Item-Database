@@ -21,7 +21,7 @@
 			}
 			$currentPage = $_GET['p'];
 			if(ctype_digit($currentPage)){ // Added
-				echo "<center><h1>Club Penguin Item Database</h1></center>";
+				echo "<center><h1>Item Database by <b>Daleth & Zaseth</b> <i>(haha that rhymes)</i></h1></center>";
 			} else {				
 				echo "<center><h1>don't do that kthx</h1></center>"; // If user uses some gay HTTP editor
 				die();
