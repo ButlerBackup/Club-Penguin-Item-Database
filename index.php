@@ -10,21 +10,17 @@
 			<?php
 			$url = "https://icer.ink/media1.clubpenguin.com/play/en/web_service/game_configs/paper_items.json";
 			$jsonItems = file_get_contents($url); // Updated, just like SWF
-
-			if( $url == "https://icer.ink/media1.clubpenguin.com/play/en/web_service/game_configs/paper_items.json"){ // Faggot trying to change URL.
+			if( $url == "https://icer.ink/media1.clubpenguin.com/play/en/web_service/game_configs/paper_items.json"){
 				// Do something
 			} else {
 				die();
 			}
-
 			$objDecode = json_decode($jsonItems, true);
 			$objPage = isset($_GET['p']) ? intval($_GET['p']) : 0;
 			$itemsPerPage = 10;
-
 			if( $itemsPerPage > 10){ // Added
 				die();
 			}
-
 			$elements = array_slice($objDecode, $objPage * $itemsPerPage, $itemsPerPage);
 			$totalPages = intval(count($objDecode)/$itemsPerPage);
 			if(!isset($_GET['p']) || empty($_GET['p'])){
@@ -39,14 +35,12 @@
 				}
 				exit;
 			}
-
 			if(ctype_digit($currentPage)){ // Added
 				echo "<center><h1>Club Penguin Item Database</h1></center>";
 			} else {
 				die();
 				echo "<center><h1>MISS ME WITH THAT GAY SHIT NIGGA!</h1></center>"; // If user uses some gay HTTP editor
 			}
-
 			$objLink1 = $currentPage - 1;
 			$objLink2 = $currentPage + 1;
 			if($_GET['p'] == 0){
@@ -72,12 +66,10 @@
 				$id = $item['paper_item_id'];
 				$member = $item['is_member'];
 				$type = $item['type'];
-
 				$member = $member ? 'True' : 'False';
 				if( $member !== 'True' && $member !== 'False' ) { // Added
 					die();
 				}
-
 				switch ($type) {
 					case 1:
 						$type = 'Color';
@@ -110,9 +102,7 @@
 						$type = 'Others';
 						break;
 				}
-
 				$strTable = "<tr><td><embed src=\"items.swf?id=" . htmlentities($id) . "\"height='50' width='50' wmode='transparent'></td><td style='text-align: center !important;'><b>Name:</b> $label</td><td><b>Item ID:</b> $id</td><td><b>Member:</b> $member</td><td><b>Cost:</b> $cost coins</td><td><b>Type:</b> $type</td></tr>"; // Modified
-
 				echo substr($strTable, 0, -5);
 			}
 			?>
